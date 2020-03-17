@@ -8,16 +8,7 @@ Hand write RPC framework in Java
 >protoBuffer(to be done)
 
 
-```mermaid
-graph LR
-A(Server) -->|publish| B( Zookeeper)
-B(Zookeeper) -->|notify| C(Client)
-C(Client) -->|subscribe| B(Zookeeper)
-A(Server) --> |response| C(Client)
-C(Client) --> |request| A(Server)
-```
-
-
+![avatar]([https://github.com/lossp/handwrite-rpc/blob/master/static/WechatIMG154.png])
 Between the Client and the Server, the data handled by Netty, which is a NIO framework.
 Protobuffer used to encode the data into binary, as a mean to enhance the performance
 
