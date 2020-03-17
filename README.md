@@ -17,6 +17,7 @@ A(Server) --> |response| C(Client)
 C(Client) --> |request| A(Server)
 ```
 
+
 Between the Client and the Server, the data handled by Netty, which is a NIO framework.
 Protobuffer used to encode the data into binary, as a mean to enhance the performance
 
