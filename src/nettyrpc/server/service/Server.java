@@ -1,9 +1,7 @@
-package server.lossp.service;
-
-import java.io.IOException;
+package nettyrpc.server.service;
 
 public interface Server {
-    public void start() throws IOException;
+    public void start() throws Exception;
 
     public void stop();
 

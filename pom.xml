@@ -23,6 +23,12 @@
             <artifactId>zookeeper</artifactId>
             <version>3.5.3-beta</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.0.0.Final</version>
+        </dependency>
     </dependencies>
 
     <groupId>portScanner</groupId>
