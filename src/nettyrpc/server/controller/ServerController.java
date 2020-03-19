@@ -1,5 +1,6 @@
 package nettyrpc.server.controller;
 
+import nettyrpc.registry.ServiceRegistry;
 import nettyrpc.server.serviceImp.ServerCenter;
 
 public class ServerController {
@@ -9,6 +10,7 @@ public class ServerController {
             return;
         }
         int port = Integer.parseInt(args[0]);
-        new ServerCenter(port).start();
+        ServiceRegistry serviceRegistry = new ServiceRegistry();
+        new ServerCenter(port, serviceRegistry).start();
     }
 }
