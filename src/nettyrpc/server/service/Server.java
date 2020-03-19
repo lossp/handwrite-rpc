@@ -7,7 +7,5 @@ public interface Server {
 
     public boolean isRunning();
 
-    public void register(Class serviceInterface, Class imp);
-
     public int getPort();
 }
