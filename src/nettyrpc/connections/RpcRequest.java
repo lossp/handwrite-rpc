@@ -1,11 +1,18 @@
 package nettyrpc.connections;
 
 public class RpcRequest {
-
+    private String requestId;
     private String methodName;
     private String className;
     private Object[] parameters;
 
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
 
     public String getMethodName() {
         return methodName;
