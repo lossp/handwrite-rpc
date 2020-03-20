@@ -1,6 +1,7 @@
 package nettyrpc.client.serviceImp;
 
 import nettyrpc.client.handler.ClientCenterHandler;
+import nettyrpc.client.proxy.ObjectProxy;
 import nettyrpc.client.service.Client;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -9,11 +10,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import nettyrpc.server.service.Hello;
-import nettyrpc.server.serviceImp.HelloImp;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 
@@ -52,17 +49,7 @@ public class ClientCenter implements Client {
         return (T) Proxy.newProxyInstance(
                 interfaceClass.getClassLoader(),
                 new Class<?>[]{interfaceClass},
-                new InvocationHandler() {
-                    // TODO helloService属于硬编码，仅仅作为测试需要
-                    Hello helloService = new HelloImp();
-                    @Override
-                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                        System.out.println("Here we are");
-                        System.out.println(method.getDeclaringClass().getName());
-                        // TODO helloService 是硬编码，需要通过Response获取到，这里仅仅作为方法尝试
-                        return method.invoke(helloService, args);
-                    }
-                }
+                new ObjectProxy<>(interfaceClass)
         );
     }
 

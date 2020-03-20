@@ -37,4 +37,8 @@ public class RpcRequest {
     public void setParameters(Object[] parameters) {
         this.parameters = parameters;
     }
+    @Override
+    public String toString() {
+        return "Request id = " + requestId + " , method name = " + methodName + " , class name = " + className;
+    }
 }
