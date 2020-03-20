@@ -35,6 +35,13 @@
             <artifactId>spring-context</artifactId>
             <version>4.3.20.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+
     </dependencies>
 
     <groupId>portScanner</groupId>

@@ -7,5 +7,7 @@ public interface Server {
 
     public boolean isRunning();
 
-    public int getPort();
+    public String getAddress();
+
+    public <T>T addService(Class<T> obj, String interfaceName);
 }

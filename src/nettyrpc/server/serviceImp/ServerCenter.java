@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ServerCenter implements Server, ApplicationContextAware {
@@ -29,10 +30,12 @@ public class ServerCenter implements Server, ApplicationContextAware {
 
     private static int port;
 
+    private static String address;
 
     // 此方法目的获取Beans，不是单单设置applicationContext，更重要是获取Spring boot运行的上下文, 由于server, client registry都是作为
     // bean方式注入，此时作为client的bean需要调用Rpc服务来运行，即Bean依赖于Spring boot容器，因此需要设置相应ApplicationContext
     // 此目的是获取Bean与对应的interface的对应关系，即Map<interface, Bean>
+    // 此方法提供给的是Spring启动项
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         Map<String, Object> serviceBeanMap = applicationContext.getBeansWithAnnotation(RpcService.class);
@@ -42,14 +45,29 @@ public class ServerCenter implements Server, ApplicationContextAware {
         }
     }
 
+    public ServerCenter(String address) {
+        this(address, new ServiceRegistry());
+    }
 
-    public ServerCenter(int port, ServiceRegistry serviceRegistry) {
+    public ServerCenter(String address, ServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
-        this.port = port;
+        this.address = address;
+        String copiedAddress = address;
+        String[] params = copiedAddress.split(":");
+        port = Integer.parseInt(params[1]);
     }
 
     public void stop() {
         isRunning = false;
+    }
+
+    public void printHandleMap() {
+        System.out.println("Entering here");
+        Iterator<String> iterator = handlerMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            System.out.println(key + " ----> " + handlerMap.get(key));
+        }
     }
 
     public void start() throws Exception {
@@ -67,19 +85,28 @@ public class ServerCenter implements Server, ApplicationContextAware {
                     });
             ChannelFuture future = bootstrap.bind().sync();
             System.out.println(ServerCenter.class.getName() + " started and listen on " + future.channel().localAddress());
+            this.printHandleMap();
             future.channel().closeFuture().sync();
         } finally {
             group.shutdownGracefully().sync();
         }
+    }
 
+
+    public <T> T addService(Class<T> clazz, String interfaceName) {
+        if (!handlerMap.containsKey(interfaceName)) {
+            System.out.println("putting interface service: " + interfaceName);
+            handlerMap.put(interfaceName, clazz);
+        }
+        return (T)clazz;
     }
 
     public boolean isRunning() {
         return isRunning;
     }
 
-    public int getPort() {
-        return port;
+    public String getAddress() {
+        return address;
     }
 
 }
