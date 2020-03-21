@@ -1,5 +1,8 @@
 package nettyrpc.client.proxy;
 
+import nettyrpc.client.handler.ClientCenterHandler;
+import nettyrpc.connections.ConnectionManager;
+import nettyrpc.connections.RpcFuture;
 import nettyrpc.connections.RpcRequest;
 
 import java.lang.reflect.InvocationHandler;
@@ -25,6 +28,8 @@ public class ObjectProxy<T> implements InvocationHandler {
         System.out.println(proxy.getClass().getName());
         // invoke做进行异步调用server中的现成服务，需要用到Future
         System.out.println(rpcRequest.toString());
-        return null;
+        ClientCenterHandler handler = ConnectionManager.getInstance().getHandler();
+        RpcFuture rpcFuture = handler.sendRequest(rpcRequest);
+        return rpcFuture.get();
     }
 }

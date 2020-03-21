@@ -7,6 +7,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import nettyrpc.connections.RpcFuture;
+import nettyrpc.connections.RpcRequest;
 
 @ChannelHandler.Sharable
 public class ClientCenterHandler extends SimpleChannelInboundHandler<ByteBuf> {
@@ -25,6 +27,11 @@ public class ClientCenterHandler extends SimpleChannelInboundHandler<ByteBuf> {
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
         cause.printStackTrace();
         context.close();
+    }
+
+    public RpcFuture sendRequest(RpcRequest rpcRequest) {
+        return null;
+
     }
 
 }
