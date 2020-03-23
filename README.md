@@ -1,7 +1,10 @@
 # handwrite-rpc
 Hand write RPC framework in Java
 
->Zookeeper(to be done)
+>Zookeeper(imported, but it needs to connect with other moduels)
+Zookeeper is imported via docker container   ./Dockerfile contains the docker-compose.yml file.
+
+>Docker(basically used)
 
 >Netty(to be done)
 
@@ -75,3 +78,4 @@ Netty is worth learning more in the near future
 #### Future
 
 In order to get the result from the server. As for my understanding, the client request is running by one thread, and the response from the server is running by a another thread.(I assumed the response comes in the client end, it is running inside the Netty on client-end. Therefore request and resposne are on the same processor). When it comes to getting the result in asynchronously, the request thread will cause blocking, and it will not go forward without the result. Therefore, future is brought in, as a mean to solve this kind of problem.
+
