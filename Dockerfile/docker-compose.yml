@@ -1,0 +1,14 @@
+version: "3.2"
+
+services:
+  zookeeper.local:
+    container_name: zookeeper.local
+    image: zookeeper
+    restart: always
+    hostname: zoo
+    ports:
+      - 2181:2181
+    volumes:
+      - ./zookeeper:/data
+      - ./zookeeper/datalog:/datalog
+
