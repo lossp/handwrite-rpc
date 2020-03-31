@@ -46,7 +46,7 @@ public class ServerCenter implements Server, ApplicationContextAware {
     }
 
     public ServerCenter(String address) {
-        this(address, new ServiceRegistry());
+        this(address, new ServiceRegistry(address));
     }
 
     public ServerCenter(String address, ServiceRegistry serviceRegistry) {
