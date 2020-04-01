@@ -4,8 +4,6 @@ import nettyrpc.constant.Constant;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 
@@ -15,7 +13,6 @@ import java.util.concurrent.CountDownLatch;
 public class ServiceRegistry {
     private CountDownLatch latch = new CountDownLatch(1);
 
-    private volatile List<String> dataList = new ArrayList<>();
     private String address;
     private ZooKeeper zooKeeper;
 
@@ -34,7 +31,7 @@ public class ServiceRegistry {
         }
     }
 
-    public ZooKeeper connectRegister() {
+    private ZooKeeper connectRegister() {
         ZooKeeper zk = null;
         try {
             zk = new ZooKeeper(address, Constant.getZOOKEEPER_SESSION_TIMEOUT(), new Watcher() {
@@ -45,7 +42,11 @@ public class ServiceRegistry {
                     System.out.println("Received watch event: " + watchedEvent);
                     if (watchedEvent.getState() == Event.KeeperState.SyncConnected) {
                         System.out.println("zookeeper status is " + Event.KeeperState.SyncConnected);
+                        // 这里调用latchCountDown()，主要是等待函数内部处理完毕之后，将latch减到0，从而整个流程不会在latch.await()阻塞，否则会在latch.await()阻塞
                         latch.countDown();
+                    }
+                    if (watchedEvent.getState() == Event.KeeperState.Disconnected) {
+                        System.out.println("zookeeper now is disconnected");
                     }
                 }
             });
@@ -73,7 +74,7 @@ public class ServiceRegistry {
     private void createNode(ZooKeeper zooKeeper, String info) {
         try {
             byte[] infoBytes = info.getBytes();
-            String path = zooKeeper.create(Constant.getZookeeperDataPath(), infoBytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            String path = zooKeeper.create(Constant.getZookeeperDataPath(), infoBytes, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
             System.out.println("Node is being created, just a moment please");
             System.out.println("the data = " + info);
             System.out.println("the path = " + path);
