@@ -10,19 +10,26 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import nettyrpc.registry.ServiceDiscovery;
 
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 
 public class ClientCenter implements Client {
-    private final String host;
-    private final int port;
+    private String host;
+    private int port;
     private boolean isRunning;
+    private String address;
+    private ServiceDiscovery serviceDiscovery;
 
     public ClientCenter(String host, int port) {
         this.host = host;
         this.port = port;
         this.isRunning = false;
+        this.address = host + ":" + port;
+    }
+    public ClientCenter(ServiceDiscovery serviceDiscovery) {
+        this.serviceDiscovery = serviceDiscovery;
     }
 
     public void start() throws Exception{
