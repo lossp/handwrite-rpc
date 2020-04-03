@@ -13,6 +13,7 @@ import nettyrpc.client.serviceImp.ClientCenter;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -20,6 +21,10 @@ public class ConnectionManager {
     private volatile static ConnectionManager connectionManager;
     private ReentrantLock lock = new ReentrantLock();
     private Condition connected = lock.newCondition();
+    private long connectTimeoutMillis = 6000;
+
+    // 这部份不是很懂？一种算法？需要理解
+    private AtomicInteger roundRobin = new AtomicInteger(0);
 
     private EventLoopGroup eventLoopGroup = new NioEventLoopGroup(4);
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 10, 600L, TimeUnit.SECONDS,
@@ -27,6 +32,7 @@ public class ConnectionManager {
 
     private CopyOnWriteArrayList<ClientCenterHandler> connectedHandlers = new CopyOnWriteArrayList<>();
     private Map<InetSocketAddress, ClientCenterHandler> connectedServerNodes = new ConcurrentHashMap<>();
+    private volatile boolean isRunning = true;
 
     public static ConnectionManager getInstance() {
         if (connectionManager == null) {
@@ -83,8 +89,31 @@ public class ConnectionManager {
         }
     }
 
+    private boolean waitingForHandler() throws InterruptedException{
+        lock.lock();
+        try {
+            return connected.await(this.connectTimeoutMillis, TimeUnit.MILLISECONDS);
+        } finally {
+            lock.unlock();
+        }
+    }
+
     // TODO
     public ClientCenterHandler getHandler() {
-        return null;
+        int size = connectedHandlers.size();
+        // 如果handler队列中没有相应的handler
+        while (isRunning & size <= 0) {
+            try {
+                boolean available = waitingForHandler();
+                if (available) {
+                    size = connectedHandlers.size();
+                }
+            } catch (InterruptedException e) {
+                System.out.println("cannot connect to any server");
+                e.printStackTrace();
+            }
+        }
+        int index = (roundRobin.getAndAdd(1) + size) % size;
+        return connectedHandlers.get(index);
     }
 }
