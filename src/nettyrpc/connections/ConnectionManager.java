@@ -8,9 +8,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import nettyrpc.client.handler.ClientCenterHandler;
 import nettyrpc.client.handler.ClientCenterInitializer;
-import nettyrpc.client.serviceImp.ClientCenter;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -46,7 +48,49 @@ public class ConnectionManager {
         return connectionManager;
     }
 
-    public void connectServerNode(final InetSocketAddress address) {
+    public void updateConnectServer(List<String> allServerAddresses) {
+        if (allServerAddresses != null && allServerAddresses.size() > 0) {
+            HashSet<InetSocketAddress> newAllServerNodeAddress = new HashSet<>();
+            // 检查地址合法性
+            for (int i = 0; i < allServerAddresses.size(); i++) {
+                String[] params = allServerAddresses.get(i).split(":");
+                if (params.length == 2) {
+                    String host = params[0];
+                    int port = Integer.parseInt(params[1]);
+                    final InetSocketAddress socketAddress = new InetSocketAddress(host, port);
+                    newAllServerNodeAddress.add(socketAddress);
+                }
+
+            }
+
+            //添加新的服务节点
+            for (final InetSocketAddress socketAddress:newAllServerNodeAddress) {
+                if (!connectedServerNodes.keySet().contains(socketAddress)) {
+                    connectServerNode(socketAddress);
+                }
+            }
+
+            // 关闭以及取消无效服务节点
+            for (int i = 0; i < connectedHandlers.size(); i++) {
+                ClientCenterHandler clientCenterHandler = connectedHandlers.get(i);
+                SocketAddress socketAddress = clientCenterHandler.getSocketAddress();
+                if (!newAllServerNodeAddress.contains(socketAddress)) {
+                    System.out.println("处理无效节点服务" + socketAddress);
+                    ClientCenterHandler handler = connectedServerNodes.get(i);
+                    if (handler != null) {
+                        handler.close();
+                    }
+                    connectedServerNodes.remove(socketAddress);
+                    connectedHandlers.remove(clientCenterHandler);
+                }
+            }
+        } else {
+            System.out.println("All server nodes are down");
+            // TODO
+        }
+    }
+
+    private void connectServerNode(final InetSocketAddress address) {
         threadPoolExecutor.submit(new Runnable() {
             @Override
             public void run() {

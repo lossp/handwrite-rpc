@@ -1,19 +1,23 @@
 package nettyrpc.client.handler;
 
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.util.CharsetUtil;
 import nettyrpc.connections.RpcFuture;
 import nettyrpc.connections.RpcRequest;
 import nettyrpc.connections.RpcResponse;
 
+import java.net.SocketAddress;
+
 @ChannelHandler.Sharable
 public class ClientCenterHandler extends SimpleChannelInboundHandler<RpcResponse> {
 
     private volatile Channel channel;
+    private SocketAddress socketAddress;
+
+    public SocketAddress getSocketAddress() {
+        return socketAddress;
+    }
 
     public Channel getChannel() {
         return this.channel;
@@ -27,7 +31,9 @@ public class ClientCenterHandler extends SimpleChannelInboundHandler<RpcResponse
 
     @Override
     public void channelActive(ChannelHandlerContext context) {
+        this.socketAddress = this.channel.remoteAddress();
         context.writeAndFlush(Unpooled.copiedBuffer("Netty Rocks", CharsetUtil.UTF_8));
+
     }
 
     @Override
@@ -44,7 +50,10 @@ public class ClientCenterHandler extends SimpleChannelInboundHandler<RpcResponse
 
     public RpcFuture sendRequest(RpcRequest rpcRequest) {
         return null;
+    }
 
+    public void close() {
+        this.channel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
     }
 
 }
