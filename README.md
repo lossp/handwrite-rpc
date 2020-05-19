@@ -54,6 +54,7 @@ It took me a detour to relize it. Finally here we are. Grasped the idea of why S
 ### Spring (to be done)
 
 Loading the xml file from the resource is the way initializing the Spring Context. Therefore it can scan the whole project and find the bean with @RpcService
+the service provider, which is the rpc server, start via Spring mvc
 
 
 
