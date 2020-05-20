@@ -1,6 +1,6 @@
-package serviceImp;
+package rpc.serviceImp;
 
-import service.RpcServer;
+import rpc.service.RpcServer;
 
 public class RpcServerImp implements RpcServer {
 

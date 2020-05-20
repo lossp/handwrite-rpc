@@ -1,4 +1,4 @@
-package service;
+package rpc.service;
 
 
 import org.springframework.stereotype.Component;
