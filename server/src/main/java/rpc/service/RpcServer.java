@@ -8,7 +8,6 @@ import java.util.Map;
 public interface RpcServer {
     public void start() throws Exception;
 
-    public void close() throws Exception;
+    public void close();
 
-    public Map<String, Object> setApplicationContext(ApplicationContext context) throws BeansException;
 }
