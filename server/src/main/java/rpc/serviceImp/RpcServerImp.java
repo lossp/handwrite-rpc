@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import rpc.handlers.ServerHandler;
 import rpc.service.RpcServer;
+import rpc.service.RpcService;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -33,21 +34,26 @@ public class RpcServerImp implements RpcServer, InitializingBean, ApplicationCon
         this.port = port;
     }
 
-
-    @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-
-    }
-
     @Override
     public void afterPropertiesSet() throws Exception {
         start();
     }
 
     @Override
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
+        Map<String, Object> beanMap = context.getBeansWithAnnotation(RpcService.class);
+        if (!beanMap.isEmpty()) {
+            for (Object bean:beanMap.values()) {
+                String interfaceName = bean.getClass().getAnnotation(RpcService.class).getValue().getName();
+                System.out.println("Loading the interface: " + interfaceName);
+                handlerMap.put(interfaceName, bean);
+            }
+        }
+    }
+
+    @Override
     public void start() throws Exception {
         try {
-            System.out.println(" ===" + address);
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(boss, worker)
                     .channel(NioServerSocketChannel.class)
@@ -68,8 +74,12 @@ public class RpcServerImp implements RpcServer, InitializingBean, ApplicationCon
 
     @Override
     public void close() {
-        boss.shutdownGracefully();
-        worker.shutdownGracefully();
+        if (boss != null) {
+            boss.shutdownGracefully();
+        }
+        if (worker != null) {
+            worker.shutdownGracefully();
+        }
     }
 
 }
