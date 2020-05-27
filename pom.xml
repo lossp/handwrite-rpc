@@ -5,7 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.6.1</version>
+            </extension>
+        </extensions>
         <plugins>
+<!--            这部分插件引入，解决cannot resolve symbol`os.detected.classifier`的问题-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -14,6 +22,42 @@
                     <source>9</source>
                     <target>9</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <!--默认值-->
+                    <protoSourceRoot>${project.basedir}/src/main/proto</protoSourceRoot>
+                    <!--默认值-->
+                    <!--<outputDirectory>${project.build.directory}/generated-sources/protobuf/java</outputDirectory>-->
+                    <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+                    <!--设置是否在生成java文件之前清空outputDirectory的文件，默认值为true，设置为false时也会覆盖同名文件-->
+                    <clearOutputDirectory>false</clearOutputDirectory>
+                    <!--默认值-->
+                    <temporaryProtoFileDirectory>${project.build.directory}/generated-sources/protobuf/java</temporaryProtoFileDirectory>
+                    <!--更多配置信息可以查看https://www.xolstice.org/protobuf-maven-plugin/compile-mojo.html-->
+                    <protocArtifact>
+                        com.google.protobuf:protoc:3.6.1:exe:${os.detected.classifier}
+                    </protocArtifact>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <!--也可以设置成局部变量，执行compile或test-compile时才执行-->
+                        <!--<configuration>-->
+                        <!--<protoSourceRoot>${project.basedir}/src/main/proto</protoSourceRoot>-->
+                        <!--<outputDirectory>${project.build.directory}/generated-sources/protobuf/java</outputDirectory>-->
+
+                        <!--</configuration>-->
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
