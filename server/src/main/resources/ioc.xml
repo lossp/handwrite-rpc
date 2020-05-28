@@ -11,10 +11,10 @@
 <!--    不加这条信息，读取出来的信息在均为${server.address} 需要指明application路径-->
     <context:property-placeholder location="classpath:application.properties"/>
 
-<!--    <bean id="rpcServer" class="rpc.serviceImp.RpcServerImp">-->
-<!--        <constructor-arg name="address" value="${server.address}"/>-->
-<!--        <constructor-arg name="port" value="${server.port}"/>-->
-<!--    </bean>-->
+    <bean id="rpcServer" class="rpc.serviceImp.RpcServerImp">
+        <constructor-arg name="address" value="${server.address}"/>
+        <constructor-arg name="port" value="${server.port}"/>
+    </bean>
     <bean id="handler" class="rpc.handlers.HandlerTest">
         <constructor-arg name="name" value="myname"></constructor-arg>
         <constructor-arg name="job" value="hooker"></constructor-arg>
