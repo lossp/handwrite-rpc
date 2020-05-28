@@ -11,7 +11,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import rpc.handlers.ServerHandler;
+import rpc.handlers.ServerHandlerInitializer;
 import rpc.service.RpcServer;
 import rpc.service.RpcService;
 
@@ -61,7 +61,7 @@ public class RpcServerImp implements RpcServer, InitializingBean, ApplicationCon
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel socketChannel) {
-                            socketChannel.pipeline().addLast(new ServerHandler());
+                            socketChannel.pipeline().addLast(new ServerHandlerInitializer());
                         }
                     });
             ChannelFuture future = bootstrap.bind().sync();

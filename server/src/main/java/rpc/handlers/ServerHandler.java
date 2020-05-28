@@ -9,7 +9,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<RpcRequestProto> 
 
     @Override
     public void channelRead0(ChannelHandlerContext context, RpcRequestProto request) {
-
+        System.out.println("entering channelRead0");
     }
 
     @Override

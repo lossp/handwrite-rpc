@@ -1,11 +1,14 @@
 package rpc.handlers;
 
-import org.springframework.stereotype.Component;
 
-@Component("HandlerTest")
 public class HandlerTest {
-    private String name = "sss";
-    private String job = "no job";
+    private String name;
+    private String job;
+
+    public HandlerTest(String name, String job) {
+        this.name = name;
+        this.job = job;
+    }
 
     public String getName() {
         return name;
