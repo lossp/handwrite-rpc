@@ -1,0 +1,9 @@
+syntax = "proto2";
+option java_outer_classname = "RpcResponseProto";
+option java_package = "valueObject";
+message RpcResponse{
+    required int32 requestId = 1;
+    required string methodName = 2;
+    required string result = 3;
+
+}
