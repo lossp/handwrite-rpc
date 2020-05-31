@@ -80,3 +80,12 @@ Netty is worth learning more in the near future
 
 In order to get the result from the server. As for my understanding, the client request is running by one thread, and the response from the server is running by a another thread.(I assumed the response comes in the client end, it is running inside the Netty on client-end. Therefore request and resposne are on the same processor). When it comes to getting the result in asynchronously, the request thread will cause blocking, and it will not go forward without the result. Therefore, future is brought in, as a mean to solve this kind of problem.
 
+
+### How does it work
+
+#### api
+
+First of all,  one common interface file is provided in the module common. It`s main purpose is to link the consumer and the server.
+
+The basic interface is defined in the server. the common interface just extended from it. As a bridge to provide the essential methods to the consumer
+
