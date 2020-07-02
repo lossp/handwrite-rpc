@@ -56,6 +56,16 @@ It took me a detour to relize it. Finally here we are. Grasped the idea of why S
 Loading the xml file from the resource is the way initializing the Spring Context. Therefore it can scan the whole project and find the bean with @RpcService
 the service provider, which is the rpc server, start via Spring mvc
 
+#### IOC container
+
+As for the Spring framework. Take initializing the IoC container for example. Initializing the IoC container by creating a new `ClassPathXmlApplicationContext` object, whose argument is the path of configuration.xml.
+
+In the constructor of `ClassPathXmlApplicationContext`, two steps were completed. The first is the setting up of the configuration path, it is attached to the instance of `ClassPathXmlApplicationContext`. The last one step is the completed by the method `refresh()`.
+
+##### refresh()
+
+`refresh()` method is a thread-safe method. it is decorated by the synchronized. Checking the configuration comes first, as the code written in `prepareRefresh()`. Then comes the big one. The `obtainFreshBeanFactory()`. Generally speaking, what `obtainFreshBeanFactory` did is emptying the `Map`, used to hold up all the beans. And then replace the old bean factory by creating a new one.
+
 
 
 #### Bean
