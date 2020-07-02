@@ -66,11 +66,17 @@ In the constructor of `ClassPathXmlApplicationContext`, two steps were completed
 
 `refresh()` method is a thread-safe method. it is decorated by the synchronized. Checking the configuration comes first, as the code written in `prepareRefresh()`. Then comes the big one. The `obtainFreshBeanFactory()`. Generally speaking, what `obtainFreshBeanFactory` did is emptying the `Map`, used to hold up all the beans. And then replace the old bean factory by creating a new one.
 
+#### configuration into dom tree
 
+In the class `*DefaultBeanDefinitionDocumentReader` parseBeanDefinitions method reads from the xml file and transform the information into a dom tree, based on xml file.
 
-#### Bean
+(To be continue)
 
-I understood bean as a basic class loading into the Spring Context, if the class is marked with annotation. then the bean is a brand new class with annotation feature on it. it is enhanced. ???
+#### bean
+
+I understood bean as a basic class loading into the Spring Context, if the class is marked with annotation. then the bean is a brand new class with annotation feature on it. it is enhanced.
+
+Speaking in plan java language, bean is the instance of BeanDefinition. The definition define the basic two bean types, one is `singleton`, the other one is `prototype`. But the definitions of bean are more than these two types. The rest of them is basically defined in web extension classes.
 
 
 
