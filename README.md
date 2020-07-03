@@ -72,6 +72,10 @@ In the class `*DefaultBeanDefinitionDocumentReader` parseBeanDefinitions method 
 
 (To be continue)
 
+- [ ] implement the algorithm of xml into dom tree
+- [ ] understood the role of AbstractXmlApplicationContext
+- [ ] configuration dom registration
+
 #### bean
 
 I understood bean as a basic class loading into the Spring Context, if the class is marked with annotation. then the bean is a brand new class with annotation feature on it. it is enhanced.
