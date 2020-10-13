@@ -72,7 +72,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
 <!--        hamcrest解决junit运行时候爆出的  java.lang.NoClassDefFoundError: org/hamcrest/SelfDescribing 问题-->
